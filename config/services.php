@@ -1,7 +1,6 @@
 <?php
 
 return [
-
     /*
     |--------------------------------------------------------------------------
     | Third Party Services
@@ -35,4 +34,8 @@ return [
         ],
     ],
 
+    'newsapi' => [
+        'key' => env('NEWSAPI_KEY'),
+        'base_url' => env('NEWSAPI_BASE_URL', 'https://newsapi.org/v2'),
+    ],
 ];
