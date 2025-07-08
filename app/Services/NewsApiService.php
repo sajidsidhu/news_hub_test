@@ -3,12 +3,27 @@
 namespace App\Services;
 
 use App\Models\Article;
+use App\Models\Source;
 use Illuminate\Support\Facades\Log;
 use jcobhams\NewsApi\NewsApi;
 
 class NewsApiService
 {
     private string $apiKey;
+
+    /**
+     * List of valid categories for NewsAPI.
+     * You can use this for user input and get realted data from newsapi.
+     */
+     public const CATEGORIES = [
+        'business',
+        'entertainment',
+        'general',
+        'health',
+        'science',
+        'sports',
+        'technology',
+    ];
 
     public function __construct()
     {
@@ -80,6 +95,60 @@ class NewsApiService
             } catch (\Exception $e) {
                 Log::error('Error saving article', [
                     'url' => $article['url'] ?? 'unknown',
+                    'error' => $e->getMessage(),
+                ]);
+            }
+        }
+        return $saved;
+    }
+
+    /**
+     * Fetch all sources from NewsAPI and return as array.
+     */
+    public function fetchSources($category, $language, $country): array
+    {
+        try {
+            $newsapi = new NewsApi($this->apiKey);
+            $response = $newsapi->getSources($category, $language, $country);
+            if (isset($response->status) && $response->status === 'ok' && isset($response->sources)) {
+                return json_decode(json_encode($response->sources), true);
+            } else {
+                Log::error('NewsAPI sources request failed', [
+                    'response' => $response
+                ]);
+                return [];
+            }
+        } catch (\Exception $e) {
+            Log::error('Error fetching sources from NewsAPI', [
+                'error' => $e->getMessage(),
+            ]);
+            return [];
+        }
+    }
+
+    /**
+     * Save sources to the database.
+     */
+    public function saveSources(array $sources): int
+    {
+        $saved = 0;
+        foreach ($sources as $source) {
+            try {
+                Source::updateOrCreate(
+                    ['source_id' => $source['id']],
+                    [
+                        'name' => $source['name'] ?? '',
+                        'description' => $source['description'] ?? null,
+                        'url' => $source['url'] ?? null,
+                        'category' => $source['category'] ?? null,
+                        'language' => $source['language'] ?? null,
+                        'country' => $source['country'] ?? null,
+                    ]
+                );
+                $saved++;
+            } catch (\Exception $e) {
+                Log::error('Error saving source', [
+                    'source_id' => $source['id'] ?? 'unknown',
                     'error' => $e->getMessage(),
                 ]);
             }
