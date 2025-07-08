@@ -14,7 +14,7 @@ class Article extends Model
         'description',
         'content',
         'author',
-        'source_name',
+        'source_id',
         'url',
         'url_to_image',
         'category',
@@ -29,41 +29,40 @@ class Article extends Model
     public static function searchArticles($query = null, $filters = [])
     {
         $q = static::query();
-        if ($query) {
-            $q->where(function($sub) use ($query) {
-                $sub->where('title', 'like', "%$query%")
-                    ->orWhere('description', 'like', "%$query%")
-                    ->orWhere('content', 'like', "%$query%")
-                    ->orWhere('author', 'like', "%$query%")
-                    ->orWhere('source_name', 'like', "%$query%")
-                    ->orWhere('category', 'like', "%$query%")
-                ;
+
+        $q->when($query, function ($q, $query) {
+            $q->where(function ($sub) use ($query) {
+            $sub->where('source_id', 'like', "%$query%")
+                ->orWhere('category', 'like', "%$query%")
+                ->orWhere('published_at', 'like', "%$query%");
             });
-        }
-        if (!empty($filters['date_from'])) {
+        });
+
+        $q->when(!empty($filters['date_from']), function ($q) use ($filters) {
             $q->whereDate('published_at', '>=', $filters['date_from']);
-        }
-        if (!empty($filters['date_to'])) {
+        });
+
+        $q->when(!empty($filters['date_to']), function ($q) use ($filters) {
             $q->whereDate('published_at', '<=', $filters['date_to']);
-        }
-        if (!empty($filters['category'])) {
-            $q->where('category', $filters['category']);
-        }
-        if (!empty($filters['source'])) {
-            $q->where('source_name', $filters['source']);
-        }
-        if (!empty($filters['author'])) {
-            $q->where('author', $filters['author']);
-        }
-        if (!empty($filters['sources'])) {
-            $q->whereIn('source_name', $filters['sources']);
-        }
-        if (!empty($filters['categories'])) {
-            $q->whereIn('category', $filters['categories']);
-        }
-        if (!empty($filters['authors'])) {
-            $q->whereIn('author', $filters['authors']);
-        }
+        });
+
+        $q->where(function ($q) use ($filters) {
+
+            $q->when(!empty($filters['categories']), function ($q) use ($filters) {
+                $q->orWhereIn('category', $filters['categories']);
+            });
+
+            $q->when(!empty($filters['sources']), function ($q) use ($filters) {
+                $q->orWhereIn('source_id', $filters['sources']);
+            });
+
+            $q->when(!empty($filters['authors']), function ($q) use ($filters) {
+                $q->orWhereIn('author', $filters['authors']);
+            });
+
+        });
+        
+
         return $q;
     }
 }

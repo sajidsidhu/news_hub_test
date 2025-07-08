@@ -26,7 +26,7 @@ class ArticleFactory extends Factory
             'description' => $this->faker->paragraph,
             'content' => $this->faker->text(1000),
             'author' => $this->faker->name,
-            'source_name' => Source::inRandomOrder()->first()?->name ?? $this->faker->company,
+            'source_id' => Source::inRandomOrder()->first()?->source_id ?? 'unknown-source',
             'url' => $this->faker->unique()->url,
             'url_to_image' => $this->faker->imageUrl(),
             'category' => $this->faker->randomElement(NewsApiService::CATEGORIES),

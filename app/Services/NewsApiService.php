@@ -84,8 +84,8 @@ class NewsApiService
                         'description' => $article['description'] ?? null,
                         'content' => $article['content'] ?? null,
                         'author' => $article['author'] ?? null,
-                        'source_name' => $article['source']['name'] ?? ($article['source_name'] ?? 'Unknown Source'),
-                        'url_to_image' => $article['urlToImage'] ?? ($article['url_to_image'] ?? null),
+                        'source_id' => $article['source']['id'] ?? 'unknown-source',
+                        'url_to_image' => $article['urlToImage'] ?? null,
                         'category' => $article['category'] ?? null,
                         'published_at' => !empty($article['publishedAt']) 
                             ? date('Y-m-d H:i:s', strtotime($article['publishedAt']))

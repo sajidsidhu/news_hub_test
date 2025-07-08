@@ -17,7 +17,7 @@ return new class extends Migration
             $table->text('description')->nullable();
             $table->text('content')->nullable();
             $table->string('author')->nullable();
-            $table->string('source_name');
+            $table->string('source_id');
             $table->text('url')->unique();
             $table->string('url_to_image')->nullable();
             $table->string('category')->nullable();
@@ -26,7 +26,7 @@ return new class extends Migration
 
             $table->index('published_at');
             $table->index('category');
-            $table->index('source_name');
+            $table->index('source_id');
             $table->index('author');
         });
     }
