@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Article;
 use App\Services\NewsApiService;
 use App\Models\Source;
+use App\Http\Resources\ArticleResource;
 
 class ArticleController extends Controller
 {
@@ -16,9 +17,6 @@ class ArticleController extends Controller
         $filters = [
             'date_from' => $request->input('date_from'),
             'date_to' => $request->input('date_to'),
-            'category' => $request->input('category'),
-            'source' => $request->input('source'),
-            'author' => $request->input('author'),
             'sources' => $request->input('sources', []),
             'categories' => $request->input('categories', []),
             'authors' => $request->input('authors', []),
@@ -27,7 +25,7 @@ class ArticleController extends Controller
         $articles = Article::searchArticles($query, $filters)
             ->orderByDesc('published_at')
             ->paginate($per_page);
-        return response()->json($articles);
+        return ArticleResource::collection($articles);
     }
 
     public function categories()
