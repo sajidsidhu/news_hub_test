@@ -15,4 +15,15 @@ class Source extends Model
         'language',
         'country',
     ];
+
+    /**
+     * Get the source IDs from the database.
+     *
+     * @return array
+     */
+    public static function getSourceIds(): array
+    {
+        return self::pluck('source_id')->toArray(); 
+    }
+    
 }

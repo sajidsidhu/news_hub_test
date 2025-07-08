@@ -42,14 +42,15 @@ class NewsApiService
             $query = $params['q'] ?? '';
             $sources = $params['sources'] ?? null;
             $domains = $params['domains'] ?? null;
+            $exclude_domains = $params['excludeDomains'] ?? null;
             $from = $params['from'] ?? null;
             $to = $params['to'] ?? null;
             $language = $params['language'] ?? null;
-            $sortBy = $params['sortBy'] ?? null;
-            $pageSize = $params['pageSize'] ?? 100;
+            $sort_by = $params['sortBy'] ?? null;
+            $page_size = $params['pageSize'] ?? 100;
             $page = $params['page'] ?? 1;
 
-            $response = $newsapi->getEverything($query, $sources, $domains, $from, $to, $language, $sortBy, $pageSize, $page);
+            $response = $newsapi->getEverything($query, $sources, $domains, $exclude_domains, $from, $to, $language, $sort_by,  $page_size, $page);
             if (isset($response->status) && $response->status === 'ok' && isset($response->articles)) {
                 $articles = json_decode(json_encode($response->articles), true);
                 return $articles;
