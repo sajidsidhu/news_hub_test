@@ -8,7 +8,7 @@ Artisan::command('inspire', function () {
     $this->comment(Inspiring::quote());
 })->purpose('Display an inspiring quote');
 
-Schedule::command('fetch:news')
+Schedule::command('fetch:news-articles-news-api')
     ->hourly()
     ->withoutOverlapping()
     ->appendOutputTo(storage_path('logs/news-fetch.log'));
