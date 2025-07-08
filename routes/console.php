@@ -12,3 +12,8 @@ Schedule::command('fetch:news-articles-news-api')
     ->hourly()
     ->withoutOverlapping()
     ->appendOutputTo(storage_path('logs/news-fetch.log'));
+
+Schedule::command('fetch:nytimes-articles')
+    ->hourly()
+    ->withoutOverlapping()
+    ->appendOutputTo(storage_path('logs/nyt.log'));

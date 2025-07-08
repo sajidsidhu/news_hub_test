@@ -38,4 +38,8 @@ return [
         'key' => env('NEWSAPI_KEY'),
         'base_url' => env('NEWSAPI_BASE_URL', 'https://newsapi.org/v2'),
     ],
+
+    'nytimes' => [
+        'key' => env('NYT_API_KEY'),
+    ],
 ];
